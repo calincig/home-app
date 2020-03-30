@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
+import { PumpService } from './services/pump/pump.service';
+import { IPumpStatus } from './interfaces/IPumpStatus';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +12,20 @@ export class AppComponent {
   public title = 'home-app';
   public waterLevel = 0;
   public pumpStarted = false;
-  
-  constructor(private http: HttpClient) { }
+  public pump: IPumpStatus;
+  public pumpMarius: IPumpStatus;
+
+  constructor(private pumpService: PumpService) { }
    
   public getArduinoPompa() {
-	  this.http.get('http://192.168.0.108:3000/arduino_pompa')
-		  .subscribe((data: any) => {
-			this.waterLevel = data['waterLevel'];
-			this.pumpStarted =  data['pumpStatus'] !== 1;
+	  this.pumpService.getArduinoPompa().then((data: IPumpStatus) => {
+  			this.pump = data;
+		  });
+  }
+   
+  public getArduinoPompaMarius() {
+	  this.pumpService.getArduinoPompaMarius().then((data: IPumpStatus) => {
+  			this.pumpMarius = data;
 		  });
   }
 }

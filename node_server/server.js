@@ -4,26 +4,48 @@ var app = express();
 
 var http = require('http');
 
+var arduinoPompaUrl = 'http://81.181.231.218:8000/';
+var arduinoPompaMariusUrl = 'http://192.168.10.102:8000/';
+
 app.use(cors());
  
 app.get('/arduino_pompa', function (req, res, next) {
-	http.get('http://81.181.231.218:8000/getstatus', (response) => {
+	http.get(`${arduinoPompaUrl}getstatus`, (response) => {
 	  const { statusCode } = response;
 	  const contentType = response.headers['content-type'];
 
-	  let error;
 	  if (statusCode !== 200) {
-		error = new Error('Request Failed.\n' +
-						  `Status Code: ${statusCode}`);
-	  } else if (!/^application\/json/.test(contentType)) {
-		error = new Error('Invalid content-type.\n' +
-						  `Expected application/json but received ${contentType}`);
-	  }
-	  if (error) {
-		console.error(error.message);
-		// Consume response data to free up memory
+		console.log(`Error: ${statusCode}`);
 		response.resume();
-		return;
+	  }
+
+	  response.setEncoding('utf8');
+	  let rawData = '';
+	  response.on('data', (chunk) => { rawData += chunk; });
+	  response.on('end', () => {
+		try {
+		  
+		  res.end( rawData );
+		  
+		  const parsedData = JSON.parse(rawData);
+		  console.log(parsedData);
+		} catch (e) {
+		  console.error(e.message);
+		}
+	  });
+	}).on('error', (e) => {
+	  console.error(`Got error: ${e.message}`);
+	});
+})
+ 
+app.get('/arduino_pompa_marius', function (req, res, next) {
+	http.get(`${arduinoPompaMariusUrl}getstatus`, (response) => {
+	  const { statusCode } = response;
+	  const contentType = response.headers['content-type'];
+
+	  if (statusCode !== 200) {
+		console.log(`Error: ${statusCode}`);
+		response.resume();
 	  }
 
 	  response.setEncoding('utf8');

@@ -1,3 +1,13 @@
 <button (click)="getArduinoPompa()" tabindex="0">Pompa</button>
-<div>waterLevel: {{waterLevel}}</div>
-<div>pumpStarted: {{pumpStarted}}</div>
+<div *ngIf="pump">
+    <div>waterLevel: {{pump.waterLevel}}</div>
+    <div>pumpStarted: {{pump.pumpStarted}}</div>
+</div>
+<hr/>
+
+<button (click)="getArduinoPompaMarius()" tabindex="1">Pompa Marius</button>
+<div *ngIf="pumppumpMarius">
+    <div>waterLevel: {{pumpMarius.waterLevel}}</div>
+    <div>pumpStarted: {{pumpMarius.pumpStarted}}</div>
+</div>
+<hr/>
