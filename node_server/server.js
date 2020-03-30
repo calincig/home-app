@@ -1,23 +1,12 @@
-const http = require('http');
-
-/*const hostname = '0.0.0.0';
-const port = 3000;
-
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello World');
-});
-
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});*/
-
-var express = require('express');
+var express = require('express')
+var cors = require('cors')
 var app = express();
-var fs = require("fs");
 
-app.get('/arduino_pompa', function (req, res) {
+var http = require('http');
+
+app.use(cors());
+ 
+app.get('/arduino_pompa', function (req, res, next) {
 	http.get('http://81.181.231.218:8000/getstatus', (response) => {
 	  const { statusCode } = response;
 	  const contentType = response.headers['content-type'];
@@ -54,10 +43,6 @@ app.get('/arduino_pompa', function (req, res) {
 	}).on('error', (e) => {
 	  console.error(`Got error: ${e.message}`);
 	});
-	/*fs.readFile( __dirname + "/" + "users.json", 'utf8', function (err, data) {
-      console.log( data );
-      res.end( data );
-   });*/
 })
 
 var server = app.listen(3000, function () {
