@@ -4,6 +4,7 @@ import { IPumpStatus } from './interfaces/IPumpStatus';
 import { Observable } from 'rxjs';
 import { map } from "rxjs/operators";
 import { timer } from 'rxjs';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,8 @@ export class AppComponent {
 	  this.pumpService.getArduinoPompa().subscribe((data: any) => {
         this.pump = {
           waterLevel: data.waterLevel,
-          pumpStarted: data.pumpStarted === 1
+          pumpStarted: data.pumpStarted === 1,
+          timeStamp: formatDate(new Date(), 'HH:mm:ss', 'en')
       }
     });
   }
