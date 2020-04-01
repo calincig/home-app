@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { PumpService } from './services/pump/pump.service';
 import { IPumpStatus } from './interfaces/IPumpStatus';
+import { Observable } from 'rxjs';
+import { map } from "rxjs/operators";
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -10,22 +13,23 @@ import { IPumpStatus } from './interfaces/IPumpStatus';
 
 export class AppComponent {
   public title = 'home-app';
-  public waterLevel = 0;
-  public pumpStarted = false;
-  public pump: IPumpStatus;
-  public pumpMarius: IPumpStatus;
+  public subscribeTimer: any;
+
+  public pump: IPumpStatus = null;
 
   constructor(private pumpService: PumpService) { }
-   
-  public getArduinoPompa() {
-	  this.pumpService.getArduinoPompa().then((data: IPumpStatus) => {
-  			this.pump = data;
-		  });
+  
+  public ngOnInit() {
+    const source = timer(0, 2000);
+    const subscribeTimer = source.subscribe(() => this.getArduinoPompa());
   }
-   
-  public getArduinoPompaMarius() {
-	  this.pumpService.getArduinoPompaMarius().then((data: IPumpStatus) => {
-  			this.pumpMarius = data;
-		  });
+
+  public getArduinoPompa() {
+	  this.pumpService.getArduinoPompa().subscribe((data: any) => {
+        this.pump = {
+          waterLevel: data.waterLevel,
+          pumpStarted: data.pumpStarted === 1
+      }
+    });
   }
 }
