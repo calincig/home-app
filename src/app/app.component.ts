@@ -20,7 +20,7 @@ export class AppComponent {
   constructor(private pumpService: PumpService) { }
   
   public ngOnInit() {
-    const source = timer(0, 2000);
+    const source = timer(0, 5000);
     const subscribeTimer = source.subscribe(() => this.getArduinoPompa());
   }
 
